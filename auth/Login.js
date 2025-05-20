@@ -1,4 +1,6 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+
+const extraStealth = require('puppeteer-extra-plugin-stealth');
 
 const { Credentials } = require('./Credentials');
 
@@ -14,6 +16,8 @@ module.exports.Login = async function (
 {
     console.log('Logging in...');
     console.time('login');
+
+    puppeteer.use(extraStealth());
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
