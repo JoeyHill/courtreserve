@@ -32,3 +32,12 @@ module.exports.GetReport = async function (url) {
     
     return result;
 }
+
+module.exports.GetEventSummary = async function (url) {
+    const result = await Login()
+        .then(async (page) => {
+            console.log('Grabbing event summary');
+            console.time('Event Summary');
+        });
+    return result;
+}

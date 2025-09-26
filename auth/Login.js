@@ -6,9 +6,9 @@ const { Credentials } = require('./Credentials');
 
 module.exports.Login = async function (
     url = 'https://app.courtreserve.com/Account/Login', options = {
-        usernameSelector: '[name=Username]',
-        passwordSelector: '[name=Password',
-        submitSelector: '.btn-submit',
+        usernameSelector: '[name=email]',
+        passwordSelector: '[name=password]',
+        submitSelector: 'button[type="submit"]',
         awaitSelector: '.k-loading-image',
         confirmLoginSelector: '[href="/Account/LogOut"]'
     }
@@ -19,10 +19,21 @@ module.exports.Login = async function (
 
     puppeteer.use(extraStealth());
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: false,
+        userDataDir: './userData'
+    });
     const page = await browser.newPage();
 
     await page.goto(url);
+
+    // Check if already logged in
+    const alreadyLoggedIn = await page.$(options.confirmLoginSelector);
+    if (alreadyLoggedIn) {
+        console.log('Already logged in, skipping login process');
+        console.timeEnd('login');
+        return page;
+    }
 
     await page.waitForNetworkIdle();
 
@@ -51,5 +62,5 @@ module.exports.Login = async function (
 			data: "Login Unsuccessful",
 		});
 		console.timeEnd("login");
-		await browser.close();
+		
 }
